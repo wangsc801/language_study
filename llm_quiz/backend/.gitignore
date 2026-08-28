@@ -1,0 +1,40 @@
+# 后端目录层 .gitignore：Python 依赖、构建/缓存、运行时产物、以及按需排除的源目录。
+
+# ---- Python 字节码 / 构建产物 ----
+__pycache__/
+*.py[cod]
+build/
+dist/
+wheels/
+*.egg-info/
+*.egg
+
+# ---- 虚拟环境 + 锁文件 ----
+.venv/
+venv/
+env/
+uv.lock
+
+# ---- 工具缓存 ----
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# ---- 运行时 / 产物 ----
+# SQLite 数据库 + llm_settings.json（含密钥）
+data/
+# 前端构建产物，由构建过程注入
+app/static/
+*.db
+*.sqlite*
+
+# ---- 按要求排除的源目录 ----
+specification/
+tests/
+
+# ---- 编辑器 / 杂项 ----
+*.log
+.DS_Store
