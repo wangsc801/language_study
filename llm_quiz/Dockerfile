@@ -1,17 +1,21 @@
 # Single unified image: builds the React Router frontend, then serves it plus the
 # API from one FastAPI process. No uv, no virtualenv — pip installs directly into
-# the image's system Python; the frontend is built with bun.
+# the image's system Python; the frontend is built with node + npm.
 #
 # Build:   docker build -t language-quiz .
 # Run:     docker run -p 8070:8070 -e LLM_API_KEY=... language-quiz
 
-# ---- Stage 1: build frontend (bun) -> emits backend/app/static/index.html + assets ----
-FROM oven/bun:1 AS frontend-build
+# ---- Stage 1: build frontend (node + npm) -> emits backend/app/static/index.html + assets ----
+# Use node (not bun): bun's `react-dom/server` resolves to `server.bun.js`, which lacks
+# the `renderToPipeableStream` export that React Router's default server entry uses,
+# so the SPA prerender 500s inside the bun runtime. node resolves it to `server.node.js`,
+# which has the export.
+FROM node:24-alpine AS frontend-build
 WORKDIR /repo
 COPY . .
 WORKDIR /repo/frontend
-RUN bun install --frozen-lockfile \
-    && bun run build
+RUN npm ci \
+    && npm run build
 
 # ---- Stage 2: FastAPI runtime (python), serves API + the static frontend ----
 FROM python:3.13-slim AS runtime
