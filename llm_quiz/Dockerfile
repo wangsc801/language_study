@@ -14,15 +14,21 @@ FROM node:24-alpine AS frontend-build
 WORKDIR /repo
 COPY . .
 WORKDIR /repo/frontend
+# China npm mirror; override with --build-arg NPM_REGISTRY=https://registry.npmjs.org
+ARG NPM_REGISTRY=https://registry.npmmirror.com
+ENV NPM_CONFIG_REGISTRY=$NPM_REGISTRY
 RUN npm ci \
     && npm run build
 
 # ---- Stage 2: FastAPI runtime (python), serves API + the static frontend ----
 FROM python:3.13-slim AS runtime
+# China pip mirror; override with --build-arg PIP_INDEX_URL=https://pypi.org/simple
+ARG PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_INDEX_URL=$PIP_INDEX_URL
 
 WORKDIR /app/backend
 
