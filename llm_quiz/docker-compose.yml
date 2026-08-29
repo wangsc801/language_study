@@ -10,12 +10,9 @@ services:
       - LLM_API_KEY=${LLM_API_KEY:-}
       - LLM_BASE_URL=${LLM_BASE_URL:-https://api.openai.com/v1}
       - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
-      - LLM_TIMEOUT=${LLM_TIMEOUT:-60}
+      - LLM_TIMEOUT=${LLM_TIMEOUT:-180}
       - LLM_JSON_MODE=${LLM_JSON_MODE:-true}
       - DB_PATH=/app/backend/data/quizzes.db
     volumes:
-      - quiz-data:/app/backend/data
+      - ./data:/app/backend/data
     restart: unless-stopped
-
-volumes:
-  quiz-data:

@@ -59,6 +59,7 @@ async def chat_json(
     }
     if cfg.llm_json_mode:
         kwargs["response_format"] = {"type": "json_object"}
+    kwargs["extra_body"] = {"thinking": {"type": "disabled"}}
 
     client = AsyncOpenAI(
         api_key=cfg.llm_api_key,
