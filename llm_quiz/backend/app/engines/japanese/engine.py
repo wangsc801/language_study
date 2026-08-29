@@ -69,6 +69,11 @@ class JapaneseLanguageEngine(LanguageEngine):
     def enrich(self, q: RawQuestion) -> ProcessedQuestion:
         return enrich_question(q)
 
+    def protected_words(self) -> set[str]:
+        # The模板固定要求从 来る/する 中出 2 道 カ/サ変, 这两个词不能设 avoid,
+        # 否则约束互相矛盾必然 502。给足宽容度, 始终允许被选中。
+        return {"来る", "する"}
+
     def question_view(self, record: dict) -> dict:
         return {
             "category": record["category"],

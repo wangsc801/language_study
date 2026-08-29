@@ -65,6 +65,12 @@ class LanguageEngine(ABC):
         """
         return dict(record)
 
+    def protected_words(self) -> set[str]:
+        """Words that this language's templates structurally require, so they must
+        be excluded from the auto-derived ``{avoid}`` list (e.g. Japanese カ変/サ変
+        fallbacks 来る/する). Default: nothing is protected."""
+        return set()
+
     def init(self) -> None:
         """Startup hook (e.g. load a tagger/dictionary). Default: no-op."""
 

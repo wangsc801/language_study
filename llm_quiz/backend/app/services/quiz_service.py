@@ -37,6 +37,7 @@ async def generate_quiz(
 ) -> tuple[str, list[ProcessedQuestion]]:
     """Run the full pipeline and persist the batch. Returns ``(batch_id, questions)``."""
     avoid = await resolve_avoid_verbs(language, avoid_verbs, auto_exclude)
+    avoid = [w for w in avoid if w not in engine.protected_words()]
     template = await get_prompt_template(language, slug)
     if template is not None:
         system, user = template["system"], template["user"]
