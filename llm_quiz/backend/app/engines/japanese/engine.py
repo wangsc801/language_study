@@ -29,9 +29,8 @@ def validate_raw_questions(data: object, avoid_verbs: list[str]) -> list[RawQues
     verbs = [q.verb for q in questions]
     if len(set(verbs)) != len(verbs):
         raise QuizRuleError("存在重复动词")
-    duplicates = set(verbs) & set(avoid_verbs)
-    if duplicates:
-        raise QuizRuleError(f"命中禁用动词: {'、'.join(sorted(duplicates))}")
+    # 宽容度策略：avoid_verbs 仅作为 prompt 提示，不再拦截命中回避词的返回，
+    # 以免 LLM 偶发命中时整个批次 502。重复动词仍不允许。
 
     for q in questions:
         if q.type not in VALID_TYPES:
